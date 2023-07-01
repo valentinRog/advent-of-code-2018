@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -23,11 +24,12 @@ int main() {
     set< Point >                intersect;
     unordered_map< int, Claim > claims;
     for ( string s; getline( cin, s ); ) {
-        s.erase( s.find( "#" ), 1 );
-        s.erase( s.find( "@" ), 1 );
-        s.erase( s.find( ":" ), 1 );
-        s.replace( s.find( "," ), 1, " " );
-        s.replace( s.find( "x" ), 1, " " );
+        set< char > charset( { '#', '@', ',', ':', 'x' } );
+        replace_if(
+            s.begin(),
+            s.end(),
+            [&]( char x ) { return charset.count( x ); },
+            ' ' );
         istringstream iss( s );
         int           id;
         Claim         c;
@@ -51,8 +53,8 @@ int main() {
         }
         return true;
     };
-    auto res = find_if( claims.begin(), claims.end(), [&]( const auto& p ) {
-                  return f( p.second );
-              } )->first;
+    auto res = find_if( claims.begin(), claims.end(), [&]( const auto &p ) {
+                   return f( p.second );
+               } )->first;
     cout << res << endl;
 }

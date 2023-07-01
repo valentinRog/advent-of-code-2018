@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <bits/stdc++.h>
+#include <regex>
 
 using namespace std;
 
@@ -16,9 +18,12 @@ int main() {
     set< Point > intersect;
     for ( string s; getline( cin, s ); ) {
         s.erase( 0, s.find( "@" ) + 1 );
-        s.erase( s.find( ":" ), 1 );
-        s.replace( s.find( "," ), 1, " " );
-        s.replace( s.find( "x" ), 1, " " );
+        set< char > charset( { ':', ',', 'x' } );
+        replace_if(
+            s.begin(),
+            s.end(),
+            [&]( char x ) { return charset.count( x ); },
+            ' ' );
         istringstream iss( s );
         int           off_x, off_y, w, h;
         iss >> off_x >> off_y >> w >> h;
