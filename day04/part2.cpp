@@ -61,22 +61,18 @@ int main() {
             guards[g].push_back( Sleep{ start, k.mi } );
         }
     }
-    auto f_sleep = []( const vector< Sleep > &v ) {
-        return accumulate(
-            v.begin(),
-            v.end(),
-            0,
-            []( int acc, const Sleep &s ) { return acc + s.end - s.start; } );
-    };
-    auto             max( max_element( guards.begin(),
-                           guards.end(),
-                           [&]( const auto &x, const auto &y ) {
-                               return f_sleep( x.second ) < f_sleep( y.second );
-                           } ) );
-    array< int, 60 > a( { 0 } );
-    for ( const auto &v : max->second ) {
-        for ( int i( v.start ); i < v.end; i++ ) { a[i]++; }
+    int id, n( 0 ), mi;
+    for ( const auto &[k, v] : guards ) {
+        array< int, 60 > a( { 0 } );
+        for ( const auto &x : v ) {
+            for ( int i( x.start ); i < x.end; i++ ) { a[i]++; }
+        }
+        const auto it = max_element( a.begin(), a.end() );
+        if ( *it > n ) {
+            id = k;
+            n  = *it;
+            mi = static_cast< int >( distance( a.begin(), it ) );
+        }
     }
-    auto mi( distance( a.begin(), max_element( a.begin(), a.end() ) ) );
-    cout << mi * max->first << endl;
+    cout << id * mi << endl;
 }
