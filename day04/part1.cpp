@@ -30,6 +30,12 @@ struct Sleep {
     int end;
 };
 
+int f_sleep( const vector< Sleep > &v ) {
+    return accumulate( v.begin(), v.end(), 0, []( int acc, const Sleep &s ) {
+        return acc + s.end - s.start;
+    } );
+}
+
 int main() {
     map< Date, string > m;
     for ( string s; getline( cin, s ); ) {
@@ -61,18 +67,12 @@ int main() {
             guards[g].push_back( Sleep{ start, k.mi } );
         }
     }
-    auto f_sleep = []( const vector< Sleep > &v ) {
-        return accumulate(
-            v.begin(),
-            v.end(),
-            0,
-            []( int acc, const Sleep &s ) { return acc + s.end - s.start; } );
-    };
-    auto             max( max_element( guards.begin(),
+    auto max( max_element( guards.begin(),
                            guards.end(),
                            [&]( const auto &x, const auto &y ) {
                                return f_sleep( x.second ) < f_sleep( y.second );
                            } ) );
+
     array< int, 60 > a( { 0 } );
     for ( const auto &v : max->second ) {
         for ( int i( v.start ); i < v.end; i++ ) { a[i]++; }

@@ -24,11 +24,11 @@ int main() {
     set< Point >                intersect;
     unordered_map< int, Claim > claims;
     for ( string s; getline( cin, s ); ) {
-        set< char > charset( { '#', '@', ',', ':', 'x' } );
+        string charset( "#@,:x" );
         replace_if(
             s.begin(),
             s.end(),
-            [&]( char x ) { return charset.count( x ); },
+            [&]( char x ) { return charset.find( x ) != string::npos; },
             ' ' );
         istringstream iss( s );
         int           id;
