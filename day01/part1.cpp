@@ -3,8 +3,8 @@
 using namespace std;
 
 int main() {
-    int    res( 0 );
-    int    n;
-    while ( cin >> n ) { res += n; }
+    int res( 0 );
+    for ( int n; cin >> n; res += n )
+        ;
     cout << res << endl;
 }
