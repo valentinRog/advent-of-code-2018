@@ -62,11 +62,7 @@ struct Draw {
     void draw() const {
         for ( int y( tl.y ); y <= br.y; y++ ) {
             for ( int x( tl.x ); x <= br.x; x++ ) {
-                if ( hs.count( Vec2{ x, y } ) ) {
-                    cout << "#";
-                } else {
-                    cout << ".";
-                }
+                cout << ( hs.count( Vec2{ x, y } ) ? "*" : " " );
             }
             cout << "\n";
         }
