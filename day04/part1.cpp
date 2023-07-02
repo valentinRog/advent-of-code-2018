@@ -1,7 +1,4 @@
-#include <algorithm>
 #include <bits/stdc++.h>
-#include <numeric>
-#include <ostream>
 
 using namespace std;
 

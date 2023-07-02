@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <cctype>
-#include <exception>
 
 using namespace std;
 
