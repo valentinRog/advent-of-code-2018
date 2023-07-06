@@ -2,6 +2,8 @@
 
 using namespace std;
 
+int compute( const set< int > &hs ) { return reduce( hs.begin(), hs.end() ); }
+
 int main() {
     unordered_set< string > rules;
     string                  line;
@@ -19,7 +21,10 @@ int main() {
         }
     }
 
-    for ( int i( 0 ); i < 20; i++ ) {
+    constexpr size_t N( 50000000000 );
+    size_t           prev_i( 0 );
+    int              step( 0 );
+    for ( size_t i( 0 ); i < N; i++ ) {
         set< int > nhs;
         for ( int i( *hs.begin() - 2 ); i <= *hs.rbegin() + 2; i++ ) {
             string key;
@@ -28,7 +33,15 @@ int main() {
             }
             if ( rules.count( key ) ) { nhs.insert( i ); }
         }
+        int current_step( compute( nhs ) - compute( hs ) );
+        if ( current_step != step ) {
+            step   = current_step;
+            prev_i = i;
+        }
+        if ( i - prev_i == 100 ) {
+            cout << compute( hs ) + step * ( N - i ) << endl;
+            break;
+        }
         hs = nhs;
     }
-    cout << reduce( hs.begin(), hs.end() ) << endl;
 }
