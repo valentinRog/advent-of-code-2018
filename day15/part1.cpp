@@ -80,7 +80,6 @@ int main() {
             x++;
         }
     }
-    print();
 
     const auto k = [&]() {
         for ( int i( 0 );; i++ ) {
