@@ -31,23 +31,6 @@ set< Vec2 >      mw;
 const array< Vec2, 4 >
     dirs( { Vec2{ 0, -1 }, Vec2{ -1, 0 }, Vec2{ 1, 0 }, Vec2{ 0, 1 } } );
 
-void print() {
-    for ( int y( 0 ); y <= mw.rbegin()->y; y++ ) {
-        for ( int x( 0 ); x <= mw.rbegin()->x; x++ ) {
-            if ( mg.count( Vec2{ x, y } ) ) {
-                cout << "G";
-            } else if ( me.count( Vec2{ x, y } ) ) {
-                cout << "E";
-            } else if ( mw.count( Vec2{ x, y } ) ) {
-                cout << "#";
-            } else {
-                cout << ".";
-            }
-        }
-        cout << "\n";
-    }
-}
-
 bool is_open( Vec2 p ) {
     return !( mg.count( p ) || me.count( p ) || mw.count( p ) );
 }
@@ -130,13 +113,11 @@ int main() {
                     }
                 }
             }
-            print();
         }
     }();
 
     int         n( 0 );
     const auto &m( mg.size() ? mg : me );
     for ( const auto [_, v] : m ) { n += v; }
-    cout << k << " " << n << endl;
     cout << k * n << endl;
 }
