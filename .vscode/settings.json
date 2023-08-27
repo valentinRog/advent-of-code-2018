@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
         "array": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "map": "cpp"
     }
 }
