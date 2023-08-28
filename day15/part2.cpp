@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <optional>
 
 using namespace std;
 
@@ -18,10 +17,6 @@ bool operator==( const Vec2 &lhs, const Vec2 &rhs ) {
 
 Vec2 operator+( const Vec2 &lhs, const Vec2 &rhs ) {
     return { lhs.x + rhs.x, lhs.y + rhs.y };
-}
-
-ostream &operator<<( ostream &os, const Vec2 &v ) {
-    return os << v.x << " " << v.y;
 }
 
 set< Vec2 > mw;
@@ -96,13 +91,14 @@ int fight( map< Vec2, int > mg, map< Vec2, int > me, int dmg ) {
                         target.erase( t );
                     }
                     if ( !target.size() ) {
-                        if ( &target == &mg ) {
-                            int n( 0 );
-                            for ( const auto [_, v] : me ) { n += v; }
-                            return i * n;
-                        } else {
-                            return 0;
-                        }
+                        if ( &target == &me ) { return 0; }
+                        int n( accumulate( me.begin(),
+                                           me.end(),
+                                           0,
+                                           []( int acc, const auto &x ) {
+                                               return acc + x.second;
+                                           } ) );
+                        return i * n;
                     }
                 }
             }
@@ -125,8 +121,8 @@ int main() {
             x++;
         }
     }
-    int dmg( 3 );
     int outcome;
-    while ( !( outcome = fight( mg, me, dmg ) ) ) { dmg++; }
+    for ( int dmg( 3 ); !( outcome = fight( mg, me, dmg ) ); dmg++ )
+        ;
     cout << outcome << endl;
 }

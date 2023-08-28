@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <optional>
 
 using namespace std;
 
@@ -20,20 +19,12 @@ Vec2 operator+( const Vec2 &lhs, const Vec2 &rhs ) {
     return { lhs.x + rhs.x, lhs.y + rhs.y };
 }
 
-ostream &operator<<( ostream &os, const Vec2 &v ) {
-    return os << v.x << " " << v.y;
-}
-
 map< Vec2, int > mg;
 map< Vec2, int > me;
 set< Vec2 >      mw;
 
 const array< Vec2, 4 >
     dirs( { Vec2{ 0, -1 }, Vec2{ -1, 0 }, Vec2{ 1, 0 }, Vec2{ 0, 1 } } );
-
-bool is_open( Vec2 p ) {
-    return !( mg.count( p ) || me.count( p ) || mw.count( p ) );
-}
 
 bool can_attack( Vec2 p, const map< Vec2, int > &target ) {
     for ( const auto d : dirs ) {
@@ -55,7 +46,8 @@ Vec2 next_pos( Vec2 p, const map< Vec2, int > &target ) {
         q.pop_front();
         if ( can_attack( data.p, target ) ) { return data.visited[1]; }
         for ( const auto d : dirs ) {
-            if ( !is_open( data.p + d ) || visited.count( data.p + d ) ) {
+            if ( mg.count( data.p + d ) || me.count( data.p + d )
+                 || mw.count( data.p + d ) || visited.count( data.p + d ) ) {
                 continue;
             }
             visited.insert( data.p + d );
@@ -115,8 +107,9 @@ int main() {
         }
     }();
 
-    int         n( 0 );
     const auto &m( mg.size() ? mg : me );
-    for ( const auto [_, v] : m ) { n += v; }
+    int n( accumulate( m.begin(), m.end(), 0, []( int acc, const auto &x ) {
+        return acc + x.second;
+    } ) );
     cout << k * n << endl;
 }
