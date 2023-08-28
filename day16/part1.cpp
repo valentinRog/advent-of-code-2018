@@ -5,29 +5,26 @@ using namespace std;
 typedef array< int, 4 > A;
 
 int main() {
-    vector< array< A, 3 > > v( { array< A, 3 >() } );
-    int                     k( 0 );
-    int                     i( 0 ), j( 0 );
-    for ( string line; getline( cin, line ); ) {
-        if ( line == "" ) {
-            if ( k++ ) { break; }
-            continue;
+    vector< array< A, 3 > > v;
+
+    ostringstream oss;
+    oss << cin.rdbuf();
+    string raw( oss.str() );
+    raw.erase( raw.begin() + raw.find( "\n\n\n" ), raw.end() );
+    const auto f = []( char x ) { return !isdigit( x ) && !isspace( x ); };
+    raw.erase( remove_if( raw.begin(), raw.end(), f ), raw.end() );
+    istringstream iss( raw );
+    deque< int >  q;
+    for ( int n; iss >> n; q.push_back( n ) )
+        ;
+    while ( q.size() ) {
+        v.push_back( array< A, 3 >() );
+        for ( auto &x : v.back() ) {
+            for ( auto &x : x ) {
+                x = q.front();
+                q.pop_front();
+            }
         }
-        if ( j == 3 ) {
-            v.push_back( array< A, 3 >() );
-            j = 0;
-            i++;
-        }
-        k            = 0;
-        const auto f = []( char x ) { return !isdigit( x ) && !isspace( x ); };
-        line.erase( remove_if( line.begin(), line.end(), f ), line.end() );
-        istringstream iss( line );
-        int           n;
-        for ( int k( 0 ); k < 4; k++ ) {
-            iss >> n;
-            v[i][j][k] = n;
-        }
-        j++;
     }
 
     const int                                            a( 1 ), b( 2 ), c( 3 );
@@ -114,14 +111,14 @@ int main() {
         return after;
     };
 
-    int res( 0 );
-    for ( const auto &v : v ) {
+    int res( count_if( v.begin(), v.end(), [&]( const auto &v ) {
         const auto &before( v[0] );
         const auto &ins( v[1] );
         const auto &after( v[2] );
-        int         n( 0 );
-        for ( const auto &[_, f] : ops ) { n += f( before, ins ) == after; }
-        res += n >= 3;
-    }
+        int         n( count_if( ops.begin(), ops.end(), [&]( const auto &x ) {
+            return x.second( before, ins ) == after;
+        } ) );
+        return n >= 3;
+    } ) );
     cout << res << endl;
 }
