@@ -5,26 +5,29 @@ using namespace std;
 const int               a( 1 ), b( 2 ), c( 3 );
 typedef array< int, 4 > A;
 
-bool compute( const vector< array< A, 3 > >                              &v,
-              const map< string, function< A( const A &, const A & ) > > &ops,
-              set< string >                                               rem,
-              array< string, 16 >                                        &codes,
-              int i = 0 ) {
-    for ( const auto &vv : v ) {
-        const auto &before( vv[0] );
-        const auto &ins( vv[1] );
-        const auto &after( vv[2] );
-        if ( ins[0] >= i ) { continue; }
-        if ( ops.at( codes[ins[0]] )( before, ins ) != after ) { return false; }
+bool compute( const array< set< string >, 16 > &cand,
+              set< string >                     rem,
+              array< string, 16 >              &res,
+              int                               i = 0 ) {
+    for ( int ii( 0 ); ii < i; ii++ ) {
+        if ( !cand[ii].count( res[ii] ) ) { return false; }
     }
-    if ( i == 16 ) { return true; }
+    if ( !rem.size() ) { return true; }
     for ( const auto &s : rem ) {
         auto nrem( rem );
         nrem.erase( s );
-        codes[i] = s;
-        if ( compute( v, ops, nrem, codes, i + 1 ) ) { return true; }
+        res[i] = s;
+        if ( compute( cand, nrem, res, i + 1 ) ) { return true; }
     }
     return false;
+}
+
+set< string > intersection( const set< string > &s1, const set< string > &s2 ) {
+    set< string > s;
+    for ( const auto &x : s1 ) {
+        if ( s2.count( x ) ) { s.insert( x ); }
+    }
+    return s;
 }
 
 int main() {
@@ -137,10 +140,24 @@ int main() {
         return after;
     };
 
-    set< string > rem;
-    for ( const auto &[k, _] : ops ) { rem.insert( k ); }
+    set< string > names;
+    for ( const auto &[k, _] : ops ) { names.insert( k ); }
+    array< set< string >, 16 > cand;
+    for ( auto &x : cand ) { x = names; }
+    for ( const auto &v : v ) {
+        const auto   &before( v[0] );
+        const auto   &ins( v[1] );
+        const auto   &after( v[2] );
+        set< string > s;
+        for ( const auto &[k, f] : ops ) {
+            if ( f( before, ins ) != after ) { continue; }
+            s.insert( k );
+        }
+        cand[ins[0]] = intersection( cand[ins[0]], s );
+    }
+
     array< string, 16 > res;
-    compute( v, ops, rem, res );
+    compute( cand, names, res );
 
     A reg{ 0, 0, 0, 0 };
     for ( string line; getline( cin, line ); ) {
