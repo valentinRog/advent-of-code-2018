@@ -37,9 +37,9 @@ bool has_floor( Vec2 p ) {
     return hs.count( p + Vec2{ 0, 1 } ) || hsw.count( p + Vec2{ 0, 1 } );
 }
 
-void fill_rest( Vec2 p = source ) {
+void fill_resting( Vec2 p = source ) {
     if ( p.y == ymax ) { return; }
-    if ( !has_floor( p ) ) { return fill_rest( p + Vec2{ 0, 1 } ); }
+    if ( !has_floor( p ) ) { return fill_resting( p + Vec2{ 0, 1 } ); }
 
     static unordered_set< Vec2 > cache;
     if ( cache.count( p ) ) { return; }
@@ -53,8 +53,8 @@ void fill_rest( Vec2 p = source ) {
     };
     const auto left  = f( lr[0] );
     const auto right = f( lr[1] );
-    if ( left.has_value() ) { fill_rest( *left ); }
-    if ( right.has_value() ) { fill_rest( *right ); }
+    if ( left.has_value() ) { fill_resting( *left ); }
+    if ( right.has_value() ) { fill_resting( *right ); }
     if ( left.has_value() || right.has_value() ) { return; }
 
     for ( const auto d : lr ) {
@@ -65,7 +65,7 @@ void fill_rest( Vec2 p = source ) {
         }
     }
 
-    return fill_rest( p + Vec2{ 0, -1 } );
+    return fill_resting( p + Vec2{ 0, -1 } );
 }
 
 int main() {
@@ -107,6 +107,6 @@ int main() {
                []( const auto p1, const auto p2 ) { return p1.y < p2.y; } )
                ->y;
 
-    fill_rest();
+    fill_resting();
     cout << hsw.size() + hsmw.size() << endl;
 }
