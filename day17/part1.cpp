@@ -73,8 +73,9 @@ void fill_moving( Vec2 p = source + Vec2{ 0, 1 } ) {
     if ( p.y >= ymin ) { hsmw.insert( p ); }
     if ( p.y == ymax ) { return; }
     if ( !has_floor( p ) ) { return fill_moving( p + Vec2{ 0, 1 } ); }
-    if ( !hs.count( p + Vec2{ -1, 0 } ) ) { fill_moving( p + Vec2{ -1, 0 } ); }
-    if ( !hs.count( p + Vec2{ 1, 0 } ) ) { fill_moving( p + Vec2{ 1, 0 } ); }
+    for ( const auto d : lr ) {
+        if ( !hs.count( p + d ) ) { fill_moving( p + d ); }
+    }
 }
 
 int main() {
