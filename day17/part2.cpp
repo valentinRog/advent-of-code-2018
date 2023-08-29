@@ -29,7 +29,6 @@ const array< Vec2, 2 > lr( { Vec2{ -1, 0 }, Vec2{ 1, 0 } } );
 
 unordered_set< Vec2 > hs;
 unordered_set< Vec2 > hsw;
-unordered_set< Vec2 > hsmw;
 
 int ymin, ymax;
 
@@ -98,5 +97,5 @@ int main() {
                ->y;
 
     fill_resting();
-    cout << hsw.size() + hsmw.size() << endl;
+    cout << hsw.size() << endl;
 }
