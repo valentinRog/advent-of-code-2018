@@ -2,87 +2,60 @@
 
 using namespace std;
 
-struct Vec2 {
-    int x;
-    int y;
-};
+int w, h;
 
-bool operator==( const Vec2 &lhs, const Vec2 &rhs ) {
-    return lhs.x == rhs.x && lhs.y == rhs.y;
-}
-
-Vec2 operator+( const Vec2 &lhs, const Vec2 &rhs ) {
-    return { lhs.x + rhs.x, lhs.y + rhs.y };
-}
-
-namespace std {
-template <> struct hash< Vec2 > {
-    size_t operator()( const Vec2 &v ) const {
-        return hash< int >()( v.x ) ^ hash< int >()( v.y );
-    }
-};
-}
-
-const array< Vec2, 8 > dirs( { Vec2{ 0, -1 },
-                               Vec2{ 1, -1 },
-                               Vec2{ 1, 0 },
-                               Vec2{ 1, 1 },
-                               Vec2{ 0, 1 },
-                               Vec2{ -1, 1 },
-                               Vec2{ -1, 0 },
-                               Vec2{ -1, -1 } } );
-
-unordered_map< Vec2, char >
-next_state( const unordered_map< Vec2, char > &state ) {
-    unordered_map< Vec2, char > m;
-    for ( const auto [k, v] : state ) {
-        switch ( v ) {
-        case '.': {
-            int n = count_if( dirs.begin(), dirs.end(), [&]( const auto d ) {
-                return state.count( k + d ) && state.at( k + d ) == '|';
-            } );
-            m[k]  = n >= 3 ? '|' : '.';
-            break;
-        }
-        case '|': {
-            int n = count_if( dirs.begin(), dirs.end(), [&]( const auto d ) {
-                return state.count( k + d ) && state.at( k + d ) == '#';
-            } );
-            m[k]  = n >= 3 ? '#' : '|';
-            break;
-        }
-        case '#': {
-            bool c = any_of( dirs.begin(), dirs.end(), [&]( const auto d ) {
-                return state.count( k + d ) && state.at( k + d ) == '#';
-            } );
-            c &= any_of( dirs.begin(), dirs.end(), [&]( const auto d ) {
-                return state.count( k + d ) && state.at( k + d ) == '|';
-            } );
-            m[k] = c ? '#' : '.';
-        }
+string adjacent( const string &state, int p ) {
+    string s;
+    for ( int y( -1 ); y <= 1; y++ ) {
+        for ( int x( -1 ); x <= 1; x++ ) {
+            if ( !x && !y ) { continue; }
+            if ( p / w == 0 && y == -1 ) { continue; }
+            if ( p / w == h - 1 && y == 1 ) { continue; }
+            if ( p % w == 0 && x == -1 ) { continue; }
+            if ( p % w == w - 1 && x == 1 ) { continue; }
+            s.push_back( state[p + y * w + x] );
         }
     }
-    return m;
+    return s;
+}
+
+string next_state( const string &state ) {
+    string res;
+    for ( int y( 0 ); y < h; y++ ) {
+        for ( int x( 0 ); x < h; x++ ) {
+            string s( adjacent( state, y * w + x ) );
+            switch ( state[y * w + x] ) {
+            case '.': {
+                int n = count( s.begin(), s.end(), '|' );
+                res.push_back( n >= 3 ? '|' : '.' );
+                break;
+            }
+            case '|': {
+                int n = count( s.begin(), s.end(), '#' );
+                res.push_back( n >= 3 ? '#' : '|' );
+                break;
+            }
+            case '#': {
+                bool c = s.find( "#" ) != string::npos;
+                c &= s.find( "|" ) != string::npos;
+                res.push_back( c ? '#' : '.' );
+            }
+            }
+        }
+    }
+    return res;
 }
 
 int main() {
-    unordered_map< Vec2, char > state;
-    string                      line;
-    int                         y( 0 );
-    for ( string line; getline( cin, line ); y++ ) {
-        int x( 0 );
-        for ( const auto c : line ) {
-            state[Vec2{ x, y }] = c;
-            x++;
-        }
+    string state;
+    for ( string line; getline( cin, line ); state += line ) {
+        w = line.size();
     }
+    h = state.size() / w;
 
     for ( int i( 0 ); i < 10; i++ ) { state = next_state( state ); }
 
-    int n1( 0 ), n2( 0 );
-    for ( const auto [_, v] : state ) {
-        n1 += v == '|';
-        n2 += v == '#';
-    }
-    cout << n1 * n2 << endl;
+    const auto res = count( state.begin(), state.end(), '|' )
+                     * count( state.begin(), state.end(), '#' );
+    cout << res << endl;
 }
