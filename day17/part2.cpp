@@ -31,7 +31,7 @@ unordered_set< Vec2 > hs;
 unordered_set< Vec2 > hsw;
 unordered_set< Vec2 > hsmw;
 
-int xmin, ymin, xmax, ymax;
+int ymin, ymax;
 
 bool has_floor( Vec2 p ) {
     return hs.count( p + Vec2{ 0, 1 } ) || hsw.count( p + Vec2{ 0, 1 } );
@@ -86,21 +86,11 @@ int main() {
         }
     }
 
-    xmin = min_element(
-               hs.begin(),
-               hs.end(),
-               []( const auto p1, const auto p2 ) { return p1.x < p2.x; } )
-               ->x;
     ymin = min_element(
                hs.begin(),
                hs.end(),
                []( const auto p1, const auto p2 ) { return p1.y < p2.y; } )
                ->y;
-    xmax = max_element(
-               hs.begin(),
-               hs.end(),
-               []( const auto p1, const auto p2 ) { return p1.x < p2.x; } )
-               ->x;
     ymax = max_element(
                hs.begin(),
                hs.end(),
