@@ -2,8 +2,8 @@
 
 using namespace std;
 
-typedef array< int64_t, 3 > A3;
-typedef array< int64_t, 6 > A6;
+typedef array< int, 3 > A3;
+typedef array< int, 6 > A6;
 
 int main() {
     string line;
@@ -108,9 +108,11 @@ int main() {
     A6 reg;
     reg[0] = 1;
     fill( reg.begin() + 1, reg.end(), 0 );
+    const int n( v[17].second[2] ), i1( v[12].second[2] ), i2( v[8].second[2] );
     while ( reg[ri] >= 0 && reg[ri] < static_cast< int >( v.size() ) ) {
-        if ( reg[ri] == 8 && ( reg[4] % reg[3] || reg[3] * reg[5] > reg[4] ) ) {
-            reg[5] = reg[4];
+        if ( reg[ri] == 8
+             && ( reg[n] % reg[i1] || reg[i1] * reg[i2] > reg[n] ) ) {
+            reg[i2] = reg[n];
         }
         reg = ops[v[reg[ri]].first]( reg, v[reg[ri]].second );
         reg[ri]++;
