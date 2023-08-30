@@ -86,8 +86,7 @@ int main() {
 
     int xmin( numeric_limits< int >::max() ), xmax( 0 ),
         ymin( numeric_limits< int >::max() ), ymax( 0 );
-    for ( const auto x :
-          array< unordered_set< Vec2 > *, 2 >( { &vdoors, &hdoors } ) ) {
+    for ( const auto x : { &vdoors, &hdoors } ) {
         for ( const auto p : *x ) {
             xmin = min( xmin, p.x );
             xmax = max( xmax, p.x );
