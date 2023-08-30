@@ -84,31 +84,16 @@ int main() {
     unordered_map< Vec2, int > dists;
     compute_dists( dists );
 
-    int xmin, xmax, ymin, ymax;
-    {
-        vector< Vec2 > doors;
-        doors.insert( doors.end(), vdoors.begin(), vdoors.end() );
-        doors.insert( doors.end(), hdoors.begin(), hdoors.end() );
-        xmin = min_element(
-                   doors.begin(),
-                   doors.end(),
-                   []( const auto p1, const auto p2 ) { return p1.x < p2.x; } )
-                   ->x;
-        ymin = min_element(
-                   doors.begin(),
-                   doors.end(),
-                   []( const auto p1, const auto p2 ) { return p1.y < p2.y; } )
-                   ->y;
-        xmax = max_element(
-                   doors.begin(),
-                   doors.end(),
-                   []( const auto p1, const auto p2 ) { return p1.x < p2.x; } )
-                   ->x;
-        ymax = max_element(
-                   doors.begin(),
-                   doors.end(),
-                   []( const auto p1, const auto p2 ) { return p1.y < p2.y; } )
-                   ->y;
+    int xmin( numeric_limits< int >::max() ), xmax( 0 ),
+        ymin( numeric_limits< int >::max() ), ymax( 0 );
+    for ( const auto x :
+          array< unordered_set< Vec2 > *, 2 >( { &vdoors, &hdoors } ) ) {
+        for ( const auto p : *x ) {
+            xmin = min( xmin, p.x );
+            xmax = max( xmax, p.x );
+            ymin = min( ymin, p.y );
+            ymax = max( ymax, p.y );
+        }
     }
 
     int res( 0 );
