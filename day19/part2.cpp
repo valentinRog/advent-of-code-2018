@@ -108,7 +108,6 @@ int main() {
     A6 reg;
     reg[0] = 1;
     fill( reg.begin() + 1, reg.end(), 0 );
-    size_t k( 0 );
     while ( reg[ri] >= 0 && reg[ri] < static_cast< int >( v.size() ) ) {
         if ( reg[ri] == 8 && ( reg[4] % reg[3] || reg[3] * reg[5] > reg[4] ) ) {
             reg[5] = reg[4];
