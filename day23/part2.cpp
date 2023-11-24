@@ -84,7 +84,7 @@ int main() {
     };
 
     auto p( vv.front().p );
-    int  step( 1 << 8 );
+    int  step( 1 << 12 );
     bool any = true;
     while ( score( p ) != static_cast< int >( vv.size() ) ) {
         if ( !any ) { step >>= 1; }
