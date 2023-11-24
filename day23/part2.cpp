@@ -83,7 +83,7 @@ int main() {
         } );
     };
 
-    Vec3 p( { 0, 0, 0 } );
+    auto p( vv.front().p );
     int  step( 1 << 12 );
     bool any = true;
     while ( score( p ) != static_cast< int >( vv.size() ) ) {
@@ -93,6 +93,18 @@ int main() {
             if ( !( f( p, p + step * d ) ) ) { continue; }
             any = true;
             p   = p + step * d;
+        }
+    }
+
+    any = true;
+    while ( true ) {
+        if ( !any ) { break; }
+        any = false;
+        for ( const auto d : dirs ) {
+            if ( ( p + d ).manhattan() > p.manhattan() ) { continue; }
+            if ( score( p + d ) < score( p ) ) { continue; }
+            p   = p + d;
+            any = true;
         }
     }
 
