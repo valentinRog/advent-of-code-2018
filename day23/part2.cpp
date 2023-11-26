@@ -60,9 +60,18 @@ int main() {
         ss >> b.p.x >> b.p.y >> b.p.z >> b.r;
     }
 
+    map< int, int > csgo;
+    for ( const auto &b : v ) { csgo[intersect( b )]++; }
+    int n = max_element( csgo.begin(),
+                         csgo.end(),
+                         []( const auto &lhs, const auto &rhs ) {
+                             return lhs.second < rhs.second;
+                         } )
+                ->first;
+
     vector< Bot > vv;
     for ( const auto &b : v ) {
-        if ( intersect( b ) > 900 ) { vv.push_back( b ); }
+        if ( intersect( b ) >= n ) { vv.push_back( b ); }
     }
 
     vector< Vec3 > dirs;
