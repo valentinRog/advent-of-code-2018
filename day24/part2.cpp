@@ -56,12 +56,20 @@ struct G {
         if ( g.weak.count( attack ) ) { return effective() * 2; }
         return effective();
     }
+
+    G *clone() const { return new G( *this ); }
 };
+
+int units( const set< G * > &a ) {
+    int n( 0 );
+    for ( auto g : a ) { n += g->n; }
+    return n;
+}
 
 set< G * > immune;
 set< G * > infection;
 
-void fight() {
+void fight( set< G * > &immune, set< G * > &infection ) {
     vector< pair< G *, G * > > targets;
     vector< G * >              v1( immune.begin(), immune.end() );
     vector< G * >              v2( infection.begin(), infection.end() );
@@ -105,6 +113,29 @@ void fight() {
     }
 }
 
+int simulate( int boost ) {
+    set< G * > s1;
+    for ( const auto x : immune ) { s1.insert( x->clone() ); }
+    for ( auto x : s1 ) { x->dmg += boost; }
+    set< G * > s2;
+    for ( const auto x : infection ) { s2.insert( x->clone() ); }
+    const auto clean = [&]() {
+        for ( auto a : { &s1, &s2 } ) {
+            for ( auto g : *a ) { delete g; }
+        }
+    };
+    while ( s1.size() && s2.size() ) {
+        int n( units( s1 ) + units( s2 ) );
+        fight( s1, s2 );
+        if ( n != units( s1 ) + units( s2 ) ) { continue; }
+        clean();
+        return 0;
+    }
+    int n( units( s1 ) );
+    clean();
+    return n;
+}
+
 int main() {
     auto filling( &immune );
     for ( string line; getline( cin, line ); ) {
@@ -112,9 +143,8 @@ int main() {
         if ( !isdigit( line.front() ) ) { continue; }
         filling->insert( new G( G::parse( line ) ) );
     }
-    while ( immune.size() && infection.size() ) { fight(); }
     int n( 0 );
-    for ( auto g : infection ) { n += g->n; }
+    for ( int i( 0 ); !n; i++ ) { n = simulate( i ); }
     cout << n << endl;
     for ( auto a : { &immune, &infection } ) {
         for ( auto g : *a ) { delete g; }
