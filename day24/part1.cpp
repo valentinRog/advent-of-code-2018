@@ -99,24 +99,22 @@ void fight() {
         if ( a2->n > 0 ) { continue; }
         for ( auto a : { &immune, &infection } ) {
             if ( !a->count( a2 ) ) { continue; }
-            delete a2;
             a->erase( a2 );
         }
     }
 }
 
 int main() {
-    auto filling( &immune );
+    auto                      filling( &immune );
+    vector< unique_ptr< G > > garbage;
     for ( string line; getline( cin, line ); ) {
         if ( line.find( "Infection" ) == 0 ) { filling = &infection; }
         if ( !isdigit( line.front() ) ) { continue; }
-        filling->insert( new G( G::parse( line ) ) );
+        garbage.push_back( make_unique< G >( G::parse( line ) ) );
+        filling->insert( garbage.back().get() );
     }
     while ( immune.size() && infection.size() ) { fight(); }
     int n( 0 );
     for ( auto g : infection ) { n += g->n; }
     cout << n << endl;
-    for ( auto a : { &immune, &infection } ) {
-        for ( auto g : *a ) { delete g; }
-    }
 }
